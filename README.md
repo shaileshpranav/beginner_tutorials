@@ -38,11 +38,9 @@ SOFTWARE.
 mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
 ```
-- Clone the repository and checkout 'ros_pub_sub' branch
+- Clone the repository
 ```
 git clone https://github.com/shaileshpranav/beginner_tutorials.git
-cd beginner_tutorials
-git checkout ros_pub_sub && git pull
 ```
 - Build the workspace
 ```
