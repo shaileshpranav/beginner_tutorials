@@ -1,0 +1,22 @@
+launch:
+
+# args passed from command line or the default value to be passed
+- arg:
+    name: "freq"
+    default: "10"
+
+# Talker node
+- node:
+    pkg: "beginner_tutorials"
+    exec: "talker"
+    name: "talker"
+    param:
+    -
+      name: "freq"
+      value: "$(var freq)"
+
+# Listener node
+- node:
+    pkg: "beginner_tutorials"
+    exec: "listener"
+    name: "listener"

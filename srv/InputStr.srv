@@ -1,0 +1,16 @@
+#
+# @file str.srv
+# @author Shailesh Pranav Rajendran (spraj@umd.edu)
+# @brief A service script
+# @version 0.1
+# @date 2022-11-01
+# 
+# @copyright MIT License (c) 2022 Shailesh Pranav Rajendran
+# 
+#/
+
+# Input String
+string inp_msg 
+---
+# Output String
+string out_msg
