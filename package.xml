@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>cpp_pubsub</name>
+  <name>beginner_tutorials</name>
   <version>0.0.0</version>
   <description>A program for simple publisher and subscriber</description>
   <maintainer email="shaileshpranav.r@gmail.com">sp</maintainer>
