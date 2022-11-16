@@ -4,8 +4,8 @@ A simple implementation of ros publisher and subscriber
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 ## Dependencies
-- Ubuntu 20.0
-- ROS2 Humble/Rolling/Foxy
+- Ubuntu 20.0 or above
+- ROS2 Humble/Foxy
 
 ## License
 ```
@@ -45,15 +45,31 @@ git clone https://github.com/shaileshpranav/beginner_tutorials.git
 - Build the workspace
 ```
 cd ~/ros2_ws/src
-colcon build --packages-select cpp_pubsub
+colcon build --packages-select beginner_tutorials
 cd .. && . install/setup.bash
 ```
 ## Run
 - Run the Publisher node
 ```
-ros2 run cpp_pubsub talker
+ros2 run beginner_tutorials talker
 ```
 - In another terminal, run the Subscriber node
 ```
-ros2 run cpp_pubsub listener
+ros2 run beginner_tutorials listener
+```
+
+## Run using Launch file
+- Change frequency value to desired
+```
+ros2 launch beginner_tutorials pubsub.yaml freq:=1
+```
+
+## Change String by calling Service
+- To change the Published string, run the talker node (Server)
+```
+ros2 run beginner_tutorials talker
+```
+- The Published string can be changed by calling the service (Client) and passing the new string in the argument as follows
+```
+ros2 run beginner_tutorials serv "Terps_Rocks"
 ```
