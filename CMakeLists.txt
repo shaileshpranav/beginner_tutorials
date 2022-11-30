@@ -51,24 +51,122 @@ rosidl_target_interfaces(serv
 ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 
+# if(BUILD_TESTING)
+#   find_package(ament_lint_auto REQUIRED)
+#   ament_lint_auto_find_test_dependencies()
+#   find_package(ament_cmake_gtest REQUIRED)
+#   # the following line skips the linter which checks for copyrights
+#   # uncomment the line when a copyright and license is not present in all source files
+#   set(ament_cmake_copyright_FOUND TRUE)
+#   # the following line skips cpplint (only works in a git repo)
+#   # uncomment the line when this package is not in a git repo
+#   set(ament_cmake_cpplint_FOUND TRUE)
+#   set(ament_cmake_cppcheck_FOUND TRUE)
+#   set(ament_cmake_flake8_FOUND TRUE)
+#   set(ament_cmake_uncrustify_FOUND TRUE)
+#   ament_add_gtest(beginner_tutorials_test test/test.cpp)
+#   ament_target_dependencies(beginner_tutorials_test rclcpp std_msgs)
+#   rosidl_target_interfaces(beginner_tutorials_test ${PROJECT_NAME} "rosidl_typesupport_cpp")
+#   ament_lint_auto_find_test_dependencies()
+# endif()
+
+
+
+
 if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  ament_lint_auto_find_test_dependencies()
-  find_package(ament_cmake_gtest REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # uncomment the line when a copyright and license is not present in all source files
-  set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # uncomment the line when this package is not in a git repo
-  set(ament_cmake_cpplint_FOUND TRUE)
-  set(ament_cmake_cppcheck_FOUND TRUE)
-  set(ament_cmake_flake8_FOUND TRUE)
-  set(ament_cmake_uncrustify_FOUND TRUE)
-  ament_add_gtest(beginner_tutorials_test test/test.cpp)
-  ament_target_dependencies(beginner_tutorials_test rclcpp std_msgs)
-  rosidl_target_interfaces(beginner_tutorials_test ${PROJECT_NAME} "rosidl_typesupport_cpp")
-  ament_lint_auto_find_test_dependencies()
-endif()
+  find_package(rclcpp REQUIRED)
+  set(ament_cmake_cppcheck_ADDITIONAL_INCLUDE_DIRS ${rclcpp_INCLUDE_DIRS})
+
+  # find_package(ament_lint_auto REQUIRED)
+  # ament_lint_auto_find_test_dependencies()
+
+  find_package(launch_testing_ament_cmake REQUIRED)
+
+  # set(service_files
+  #   "srv/InputStr.srv"
+  # )
+  # rosidl_generate_interfaces(${PROJECT_NAME}
+  #   ${service_files}
+  #   SKIP_INSTALL
+  # )
+
+
+  function(custom_executable target)
+    add_executable(${target} ${ARGN})
+    target_compile_definitions(${target}
+      PUBLIC "RMW_IMPLEMENTATION=${rmw_implementation}")
+    rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
+    target_link_libraries(${target} "${cpp_typesupport_target}")
+    ament_target_dependencies(${target}
+      "rclcpp")
+  endfunction()
+
+  function(custom_gtest_executable target)
+    ament_add_gtest_executable(${target} ${ARGN})
+    target_compile_definitions(${target}
+      PUBLIC "RMW_IMPLEMENTATION=${rmw_implementation}")
+    rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
+    target_link_libraries(${target} "${cpp_typesupport_target}")
+    ament_target_dependencies(${target}
+      "rclcpp")
+  endfunction()
+
+  macro(custom_launch_test_two_executables test_name executable1 executable2)
+    cmake_parse_arguments(_ARG "" "ARGS1;ARGS2;RMW1;RMW2" "" ${ARGN})
+    set(TEST_NAME "${test_name}")
+    set(TEST_EXECUTABLE1 "$<TARGET_FILE:${executable1}>")
+    set(TEST_EXECUTABLE1_ARGS "${_ARG_ARGS1}")
+    set(TEST_EXECUTABLE1_NAME "${executable1}")
+    set(TEST_RMW_IMPLEMENTATION1 "${_ARG_RMW1}")
+    set(TEST_EXECUTABLE2 "$<TARGET_FILE:${executable2}>")
+    set(TEST_EXECUTABLE2_ARGS "${_ARG_ARGS2}")
+    set(TEST_EXECUTABLE2_NAME "${executable2}")
+    set(TEST_RMW_IMPLEMENTATION2 "${_ARG_RMW2}")
+    configure_file(
+      test/test.cpp
+      ${test_name}${target_suffix}.py.configure
+      @ONLY
+    )
+    file(GENERATE
+      OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${test_name}${target_suffix}_$<CONFIG>.py"
+      INPUT "${CMAKE_CURRENT_BINARY_DIR}/${test_name}${target_suffix}.py.configure"
+    )
+    add_launch_test(
+      "${CMAKE_CURRENT_BINARY_DIR}/${test_name}${target_suffix}_$<CONFIG>.py"
+      TARGET "${test_name}${target_suffix}"
+      APPEND_LIBRARY_DIRS "${append_library_dirs}"
+      ${_ARG_UNPARSED_ARGUMENTS}
+    )
+    if(TEST ${test_name}${target_suffix})
+      set_tests_properties(${test_name}${target_suffix}
+        PROPERTIES DEPENDS "${executable1}${target_suffix} ${executable2}${target_suffix}"
+      )
+    endif()
+  endmacro()
+
+  macro(targets)
+
+    # Service tests single implementation
+    custom_launch_test_two_executables(test
+      ENV
+      RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
+      RMW_IMPLEMENTATION=${rmw_implementation}
+      TIMEOUT 60)
+
+  endmacro()
+
+  set(append_library_dirs "${CMAKE_CURRENT_BINARY_DIR}")
+
+  call_for_each_rmw_implementation(targets)
+
+  # Service tests single implementation
+  custom_gtest_executable(ros_test "test/test.cpp")
+
+endif()  # BUILD_TESTING
+
+
+
+
 
 
 install(TARGETS
