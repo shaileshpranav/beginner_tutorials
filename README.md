@@ -73,3 +73,30 @@ ros2 run beginner_tutorials talker
 ```
 ros2 run beginner_tutorials serv "Terps_Rocks"
 ```
+
+
+## For running tf2 broadcaster
+
+```
+. install/setup.bash
+ros2 run beginner_tutorials talker talk 31 21 2 1 0 1
+```
+
+## For recording ROS bag
+
+```
+. install/setup.bash
+ros2 launch beginner_tutorials tf.py record:=True
+```
+## Listener node with ROS bag
+```
+ros2 bag play beginner_tutorials_bag
+ros2 run beginner_tutorials listener
+```
+
+## For running unit tests
+
+```
+cd ~/ros2_ws
+colcon test --packages-select beginner_tutorials
+```

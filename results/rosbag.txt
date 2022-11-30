@@ -1,0 +1,13 @@
+ros2 bag info beginner_tutorials_bag
+
+Files:             beginner_tutorials_bag_0.db3
+Bag size:          38.8 KiB
+Storage id:        sqlite3
+Duration:          15.383s
+Start:             Nov 30 2022 16:58:20.311 (1669845500.311)
+End:               Nov 30 2022 16:58:35.694 (1669845515.694)
+Messages:          147
+Topic information: Topic: /chatter | Type: std_msgs/msg/String | Count: 47 | Serialization Format: cdr
+                   Topic: /parameter_events | Type: rcl_interfaces/msg/ParameterEvent | Count: 0 | Serialization Format: cdr
+                   Topic: /rosout | Type: rcl_interfaces/msg/Log | Count: 99 | Serialization Format: cdr
+                   Topic: /tf_static | Type: tf2_msgs/msg/TFMessage | Count: 1 | Serialization Format: cdr

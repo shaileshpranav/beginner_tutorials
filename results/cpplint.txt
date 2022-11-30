@@ -1,4 +1,6 @@
-cpplint --filter=-build/c++11,+build/c++17,-build/namespaces,-build/include_order beginner_tutorials/src/*.cpp
-Done processing beginner_tutorials/src/Service.cpp
-Done processing beginner_tutorials/src/pub.cpp
-Done processing beginner_tutorials/src/sub.cpp
+cpplint --filter=-build/c++11,+build/c++17,-build/namespaces,-build/include_order src/*.cpp
+Done processing src/Service.cpp
+src/pub.cpp:28:  Single-parameter constructors should be marked explicit.  [runtime/explicit] [5]
+Done processing src/pub.cpp
+Done processing src/sub.cpp
+Total errors found: 1
