@@ -8,19 +8,19 @@
  * @copyright MIT License (c) 2022 Shailesh Pranav Rajendran
  *
  */
+#include "beginner_tutorials/srv/input_str.hpp"
 #include <chrono>
 #include <functional>
 #include <memory>
 #include <string>
-
-#include "beginner_tutorials/srv/input_str.hpp"
-#include "geometry_msgs/msg/transform_stamped.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
+#include "geometry_msgs/msg/transform_stamped.hpp"
 #include "tf2/LinearMath/Quaternion.h"
 #include "tf2_ros/static_transform_broadcaster.h"
 
 using namespace std::chrono_literals;
+using namespace std::placeholders;
 /* This example creates a subclass of Node and uses std::bind() to register a
  * member function as a callback from the timer. */
 class Pub : public rclcpp::Node {
@@ -73,7 +73,7 @@ class Pub : public rclcpp::Node {
     RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", message.data.c_str());
     publisher_->publish(message);
   }
-  void make_transforms(char *transformation[]) {
+  void make_transforms(char * transformation[]) {
     geometry_msgs::msg::TransformStamped t;
 
     t.header.stamp = this->get_clock()->now();
@@ -105,9 +105,8 @@ class Pub : public rclcpp::Node {
 
 int main(int argc, char *argv[]) {
   rclcpp::init(argc, argv);
-  std::shared_ptr<rclcpp::Node> node = std::make_shared<Pub>(argv);
-  rclcpp::spin(node);
-  RCLCPP_FATAL_STREAM(node->get_logger(), "ROS Shutting Down");
+  rclcpp::spin(std::make_shared<Pub>(argv));
+  // RCLCPP_FATAL_STREAM(node->get_logger(), "ROS Shutting Down");
   rclcpp::shutdown();
   return 0;
 }
